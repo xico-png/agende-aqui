@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleCalendarService } from '../google-calendar/google-calendar.service';
 import { CreateSubjectDto, DayOfWeek } from './dto/create-subject.dto';
+import { buildDateTime } from '../utils/datetime.util';
 
 const DAY_OF_WEEK_INDEX: Record<DayOfWeek, number> = {
   [DayOfWeek.DOMINGO]: 0,
@@ -29,11 +30,11 @@ export class SubjectsService {
         weeklyClass.dayOfWeek,
       );
 
-      const startDateTime = this.buildDateTime(
+      const startDateTime = buildDateTime(
         firstOccurrence,
         weeklyClass.startTime,
       );
-      const endDateTime = this.buildDateTime(
+      const endDateTime = buildDateTime(
         firstOccurrence,
         weeklyClass.endTime,
       );
@@ -87,13 +88,6 @@ export class SubjectsService {
     const diff = (targetDay - currentDay + 7) % 7;
     date.setDate(date.getDate() + diff);
     return date;
-  }
-
-  private buildDateTime(date: Date, time: string): string {
-    const [hours, minutes] = time.split(':');
-    const d = new Date(date);
-    d.setHours(Number(hours), Number(minutes), 0, 0);
-    return d.toISOString().replace(/\.\d{3}Z$/, '');
   }
 
   private dateToRRuleUntil(date: string): string {

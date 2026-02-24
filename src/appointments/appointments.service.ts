@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleCalendarService } from '../google-calendar/google-calendar.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { stripTimezone } from '../utils/datetime.util';
 
 @Injectable()
 export class AppointmentsService {
@@ -19,8 +20,8 @@ export class AppointmentsService {
         description: dto.description,
         location: dto.location,
         colorId: dto.colorId,
-        start: { dateTime: dto.startDateTime, timeZone: timezone },
-        end: { dateTime: dto.endDateTime, timeZone: timezone },
+        start: { dateTime: stripTimezone(dto.startDateTime), timeZone: timezone },
+        end: { dateTime: stripTimezone(dto.endDateTime), timeZone: timezone },
         reminders: {
           useDefault: false,
           overrides: [{ method: 'popup', minutes: reminderMinutes }],
